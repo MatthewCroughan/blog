@@ -1,0 +1,69 @@
+<!doctype html><html lang=en><head><title>Lustrating My Frustrating Arch Install (De-Antergosifying) :: Matthew Croughan's Blog</title><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="lustrate
+/ˈlʌstreɪt/
+verb
+purify by expiatory sacrifice, ceremonial washing, or some other ritual action. &amp;ldquo;a soul lustrated in the baptismal waters&amp;rdquo;
+ The Past (Thu 21 May 23:26:00 GMT 2020) 2 years ago, in 2018, I began using Linux for real. My distribution of choice was Antergos, an &amp;lsquo;easy button&amp;rsquo; Arch installer that was really popular at the time. The first package I added post-install apparently was synergy, a package to share my mouse/keyboard with my still-existing Windows 10 machine:"><meta name=keywords content="linux,nixos,arch"><meta name=robots content="noodp"><link rel=canonical href=https://blog.croughan.sh/posts/lustrating-arch/><link rel=stylesheet href=https://blog.croughan.sh/assets/style.css><link rel=stylesheet href=https://blog.croughan.sh/assets/blue.css><link rel=apple-touch-icon href=https://blog.croughan.sh/img/apple-touch-icon-192x192.png><link rel="shortcut icon" href=https://blog.croughan.sh/img/favicon/blue.png><meta name=twitter:card content="summary"><meta name=twitter:site content="croughan.sh"><meta name=twitter:creator content="matthewcroughan"><meta property="og:locale" content="en"><meta property="og:type" content="article"><meta property="og:title" content="Lustrating My Frustrating Arch Install (De-Antergosifying)"><meta property="og:description" content="lustrate
+/ˈlʌstreɪt/
+verb
+purify by expiatory sacrifice, ceremonial washing, or some other ritual action. &amp;ldquo;a soul lustrated in the baptismal waters&amp;rdquo;
+ The Past (Thu 21 May 23:26:00 GMT 2020) 2 years ago, in 2018, I began using Linux for real. My distribution of choice was Antergos, an &amp;lsquo;easy button&amp;rsquo; Arch installer that was really popular at the time. The first package I added post-install apparently was synergy, a package to share my mouse/keyboard with my still-existing Windows 10 machine:"><meta property="og:url" content="https://blog.croughan.sh/posts/lustrating-arch/"><meta property="og:site_name" content="Matthew Croughan's Blog"><meta property="og:image" content="https://blog.croughan.sh/defenestratergos.webp"><meta property="og:image:width" content="2048"><meta property="og:image:height" content="1024"><meta property="article:published_time" content="2020-11-11 23:25:09 +0000 UTC"></head><body class=blue><div class="container center headings--one-size"><header class=header><div class=header__inner><div class=header__logo><a href=/><div class=logo>croughan.sh</div></a></div><div class=menu-trigger>menu</div></div></header><div class=content><div class=post><h1 class=post-title><a href=https://blog.croughan.sh/posts/lustrating-arch/>Lustrating My Frustrating Arch Install (De-Antergosifying)</a></h1><div class=post-meta><span class=post-date>2020-11-11</span>
+<span class=post-author>:: Matthew Croughan</span></div><span class=post-tags>#<a href=https://blog.croughan.sh/tags/linux/>linux</a>&nbsp;
+#<a href=https://blog.croughan.sh/tags/arch/>arch</a>&nbsp;
+#<a href=https://blog.croughan.sh/tags/></a>&nbsp;</span>
+<img src=https://blog.croughan.sh/defenestratergos.webp class=post-cover alt="Lustrating My Frustrating Arch Install (De-Antergosifying)"><div class=post-content><div><blockquote><p>lustrate<br>/ˈlʌstreɪt/<br><em>verb</em><br>purify by expiatory sacrifice, ceremonial washing, or some other ritual action.
+<em>&ldquo;a soul lustrated in the baptismal waters&rdquo;</em></p></blockquote><h1 id=the-past-thu-21-may-232600-gmt-2020>The Past (Thu 21 May 23:26:00 GMT 2020)<a href=#the-past-thu-21-may-232600-gmt-2020 class=hanchor arialabel=Anchor>&#8983;</a></h1><p>2 years ago, in 2018, I began using Linux for real. My distribution of choice
+was <a href=https://en.wikipedia.org/wiki/Antergos>Antergos</a>, an &lsquo;easy button&rsquo; Arch
+installer that was really popular at the time. The first package I added
+post-install apparently was <code>synergy</code>, a package to share my mouse/keyboard with
+my still-existing Windows 10 machine:</p><pre><code>matthew@thinkpad ~ $ head -n 3 /var/log/pacman.log
+[2018-05-21 23:26] [PACMAN] Running 'pacman -S synergy'
+[2018-05-21 23:26] [ALPM] transaction started
+[2018-05-21 23:26] [ALPM] installed synergy (1.8.8-3)
+</code></pre><p>Little did I know that by choosing to use Antergos, I had already <strong>infected my
+future.</strong></p><h2 id=the-now-thu-12-nov-053830-gmt-2020>The Now (Thu 12 Nov 05:38:30 GMT 2020):<a href=#the-now-thu-12-nov-053830-gmt-2020 class=hanchor arialabel=Anchor>&#8983;</a></h2><p>It&rsquo;s 5AM. I have work tomorrow. What better way to spend my time than debugging
+this crap? I love it.</p><div class=collapsable-code><input id=1 type=checkbox checked>
+<label for=1><span class=collapsable-code__language>PACMAN</span>
+<span class=collapsable-code__title>Full Output</span>
+<span class=collapsable-code__toggle data-label-expand=Show data-label-collapse=Hide></span></label><pre class=language-PACMAN><code>
+matthew@thinkpad ~ $ sudo pacman -Syu
+:: Synchronising package databases...
+ core is up to date
+ extra is up to date
+ community is up to date
+ multilib is up to date
+:: Starting full system upgrade...
+:: Replace pygobject-devel with extra/python-gobject? [Y/n] y
+:: Replace user-manager with extra/plasma-desktop? [Y/n] y
+:: Replace xorg-luit with extra/luit? [Y/n] y
+resolving dependencies...
+looking for conflicting packages...
+error: failed to prepare transaction (could not satisfy dependencies)
+:: removing xorg-luit breaks dependency &#39;xorg-luit&#39; required by antergos-common-meta
+:: removing user-manager breaks dependency &#39;user-manager&#39; required by antergos-kde-meta
+</code></pre></div><p><code>:: removing xorg-luit breaks dependency 'xorg-luit' required by antergos-common-meta</code></p><p><code>:: removing user-manager breaks dependency 'user-manager' required by antergos-kde-meta</code></p><p><em>Agony.</em></p><p><a href=https://itsfoss.com/antergos-linux-discontinued/>When Antergos discontinued in May
+2019</a>, I removed their mirrors
+from <code>/etc/pacman.conf</code>, which should have been enough. Everything had been fine
+until now.</p><h4 id=the-problem>The problem?<a href=#the-problem class=hanchor arialabel=Anchor>&#8983;</a></h4><ol><li><p>The now dead and unmaintained
+<a href=https://wiki.archlinux.org/index.php/Meta_package_and_package_group>meta-package</a>
+is causing <a href=https://en.wikipedia.org/wiki/Dependency_hell>dependency hell</a> since
+I did not remove it when Antergos died.</p></li><li><p>My decision to use Antergos has screwed me 2 years later.</p></li><li><p>I should have moved over to NixOS a long time ago.</p></li></ol><h4 id=the-solution>The solution?<a href=#the-solution class=hanchor arialabel=Anchor>&#8983;</a></h4><ol><li>Simply remove the meta packages via <code>pacman -Rdd</code></li></ol><pre><code>matthew@thinkpad ~ $ sudo pacman -Rdd antergos-kde-meta antergos-common-meta
+
+Package (2)           Old Version  Net Change
+
+antergos-common-meta  1.5-1          0.00 MiB
+antergos-kde-meta     1.1-1          0.00 MiB
+
+Total Removed Size:  0.01 MiB
+
+:: Do you want to remove these packages? [Y/n] 
+</code></pre><h4 id=the-result>The result?<a href=#the-result class=hanchor arialabel=Anchor>&#8983;</a></h4><p>🕒 1 wasted hour.</p><p>I did not know what meta-packages were, or the consequences of removing them.</p><p>I can now update my Arch system. Hopefully there is no more Antergos cruft still
+lingering in my system.</p><p>Everything will be fine going forward, as long as:</p><ul><li>Power isn&rsquo;t lost during upgrade</li><li>I do not <code>^C</code> the upgrade at an inopportune time</li><li>Creation of the initramfs succeeds (<a href=https://bugs.archlinux.org/task/54918>it&rsquo;s weird
+sometimes&mldr;</a>)</li><li>I do not run out of disk space</li></ul><p>If any item from this list isn&rsquo;t met, the system can fail to boot. Since updates
+are not atomic in any way. The only way to recover from such a situation is
+<code>arch-chroot</code> on an external recovery boot image such as the Arch install media
+itself.</p><p>This has happened to me too many times on this install, I count a total of 5
+times. Though, if anything, this is a testament to how recoverable bad
+situations can be on Linux if you have the
+<a href=https://docstore.mik.ua/orelly/unix3/upt/ch14_03.htm>know-how</a></p><p>Stuff like this really makes me want to move to NixOS, where these issues don&rsquo;t
+exist, or at least simple rollback from failure states is easy and built in.</p></div></div></div></div><footer class=footer><div class=footer__inner><div class=copyright><span>© 2020 Powered by <a href=http://gohugo.io>Hugo</a></span>
+<span>:: Theme made by <a href=https://twitter.com/panr>panr</a></span></div></div></footer><script src=https://blog.croughan.sh/assets/main.js></script><script src=https://blog.croughan.sh/assets/prism.js></script></div></body></html>
