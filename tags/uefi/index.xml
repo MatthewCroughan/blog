@@ -8,10 +8,10 @@ humans make this? Is any one responsible? Who is to blame? UEFI was designed by
 a comittee, so no one can be held accountable.&lt;/p>
 &lt;p>More digging tells me that UEFI was &lt;a href="https://uefi.org/members">developed by over 140 technology companies
 as part of a UEFI consortium&lt;/a>. Is there any wonder
-nobody can decide how to implement it? Especially when Facebook (!?!?) is a
-member. Some BIOSes hardcode paths to &lt;code>/EFI/Microsoft/Boot/bootmgfw.efi&lt;/code>,
-probably because some of these companies only care about Windows and screwed it
-up for the rest of us.&lt;/p>
+nobody can decide how to implement it? Especially when Facebook (!?!?) have a
+seat at the table. Some BIOSes hardcode paths to
+&lt;code>/EFI/Microsoft/Boot/bootmgfw.efi&lt;/code>, probably because some of these companies
+only care about Windows and screwed it up for the rest of us.&lt;/p>
 &lt;p>The first machine I ever ran Linux on was an Intel Server Board S5520UR. It
 taught me Linux, I had no experience prior to it, it has taught me a lot of
 things, but today it taught me a little bit about UEFI. Intel gets the most
