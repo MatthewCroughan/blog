@@ -9,7 +9,7 @@ a comittee, so no one can be held accountable.&lt;/p>
 &lt;p>More digging tells me that UEFI was &lt;a href="https://uefi.org/members">developed by over 140 technology companies
 as part of a UEFI consortium&lt;/a>. Is there any wonder
 nobody can decide how to implement it? Especially when Facebook (!?!?) have a
-seat at the table. Some BIOSes hardcode paths to
+seat at the table. Some implementations hardcode paths to
 &lt;code>/EFI/Microsoft/Boot/bootmgfw.efi&lt;/code>, probably because some of these companies
 only care about Windows and screwed it up for the rest of us.&lt;/p>
 &lt;p>The first machine I ever ran Linux on was an Intel Server Board S5520UR. It
@@ -124,7 +124,7 @@ anything with EFI.&lt;/p>
 &lt;code>\efi\boot\bootx64.efi&lt;/code>. Then, I try to boot it. It boots without the
 assistance of rEFInd.&lt;/p>
 &lt;h1 id="takeaway">Takeaway&lt;/h1>
-&lt;p>S5520UR:&lt;/p>
+&lt;p>The S5520UR:&lt;/p>
 &lt;ul>
 &lt;li>Won&amp;rsquo;t use fallback locations&lt;/li>
 &lt;li>Halts the CPU when &lt;code>/sys/firmware/efi/efivars/&lt;/code> is poked&lt;/li>
