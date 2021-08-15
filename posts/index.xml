@@ -12,8 +12,9 @@ nobody can decide how to implement it? Especially when Facebook (!?!?) have a
 seat at the table. Some implementations hardcode paths to
 &lt;code>/EFI/Microsoft/Boot/bootmgfw.efi&lt;/code>, probably because some of these companies
 only care about Windows and screwed it up for the rest of us.&lt;/p>
-&lt;p>The first machine I ever ran Linux on was an Intel Server Board S5520UR. It
-taught me Linux, I had no experience prior to it, it has taught me a lot of
+&lt;p>The first machine I ever ran Linux on was an &lt;a href="https://ark.intel.com/content/www/us/en/ark/products/36456/intel-server-board-s5520ur.html">Intel Server Board
+S5520UR&lt;/a>.
+It taught me Linux, I had no experience prior to it, it has taught me a lot of
 things, but today it taught me a little bit about UEFI. Intel gets the most
 credit for creating UEFI in various articles, yet this board has one of the most
 broken UEFI implementations (irony?). For 3 years, I gave up trying to install
@@ -24,8 +25,10 @@ the time it takes to POST!&lt;/p>
 &lt;ul>
 &lt;li>The board takes 2 minutes to initialize and POST, which is much longer than it takes
 to boot Linux.&lt;/li>
-&lt;li>Cost me only £50 from eBay.&lt;/li>
-&lt;li>Is probably not worth the effort, but whatever.&lt;/li>
+&lt;li>It cost me only £50~ from eBay.&lt;/li>
+&lt;li>It was a cheap way to get 24 threads&lt;/li>
+&lt;li>The processor(s) (Xeon x5675) cost only £10~&lt;/li>
+&lt;li>It probably isn&amp;rsquo;t worth the effort, but whatever.&lt;/li>
 &lt;/ul>
 &lt;h1 id="the-problem">The problem&lt;/h1>
 &lt;p>Attempts to install any OS in EFI mode results in the BIOS of the S5520UR
