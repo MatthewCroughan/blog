@@ -1,4 +1,136 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>linux on Matthew Croughan's Blog</title><link>https://blog.croughan.sh/tags/linux/</link><description>Recent content in linux on Matthew Croughan's Blog</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Wed, 11 Nov 2020 23:25:09 +0000</lastBuildDate><atom:link href="https://blog.croughan.sh/tags/linux/index.xml" rel="self" type="application/rss+xml"/><item><title>Lustrating My Frustrating Arch Install (De-Antergosifying)</title><link>https://blog.croughan.sh/posts/lustrating-arch/</link><pubDate>Wed, 11 Nov 2020 23:25:09 +0000</pubDate><guid>https://blog.croughan.sh/posts/lustrating-arch/</guid><description>lustrate
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>linux on Matthew Croughan's Blog</title><link>https://blog.croughan.sh/tags/linux/</link><description>Recent content in linux on Matthew Croughan's Blog</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Sun, 15 Aug 2021 03:51:17 +0100</lastBuildDate><atom:link href="https://blog.croughan.sh/tags/linux/index.xml" rel="self" type="application/rss+xml"/><item><title>NixOS + the Worst UEFI ever (S5520UR)</title><link>https://blog.croughan.sh/posts/nixos-on-s5520ur/</link><pubDate>Sun, 15 Aug 2021 03:51:17 +0100</pubDate><guid>https://blog.croughan.sh/posts/nixos-on-s5520ur/</guid><description>If you read the Wikipedia Page on UEFI you will notice there are a few things missing.
+The first thing that is missing is names. The second is the word &amp;lsquo;engineer&amp;rsquo;. Did humans make this? Is any one responsible? Who is to blame? UEFI was designed by a comittee, so no one can be held accountable.
+More digging tells me that UEFI was developed by over 140 technology companies as part of a UEFI consortium.</description><content>&lt;p>If you read &lt;a href="https://en.wikipedia.org/wiki/Unified_Extensible_Firmware_Interface">the Wikipedia Page on
+UEFI&lt;/a> you
+will notice there are a few things missing.&lt;/p>
+&lt;p>The first thing that is missing is names. The second is the word &amp;lsquo;engineer&amp;rsquo;. Did
+humans make this? Is any one responsible? Who is to blame? UEFI was designed by
+a comittee, so no one can be held accountable.&lt;/p>
+&lt;p>More digging tells me that UEFI was &lt;a href="https://uefi.org/members">developed by over 140 technology companies
+as part of a UEFI consortium&lt;/a>. Is there any wonder
+nobody can decide how to implement it? Some BIOSes hardcode paths to
+&lt;code>/EFI/Microsoft/Boot/bootmgfw.efi&lt;/code>, probably because some of these companies
+only care about Windows and screwed it up for the rest of us.&lt;/p>
+&lt;p>The first machine I ever ran Linux on was an Intel Server Board S5520UR. It
+taught me Linux, I had no experience prior to it, it has taught me a lot of
+things, but today it taught me a little bit about UEFI. Intel created UEFI, yet
+this board has a broken UEFI implementation (irony?). For 3 years, I gave up
+trying to install anything in EFI mode with this board, thinking it was
+impossible. But today, I decided I wasn&amp;rsquo;t content with that, so went on an 8
+hour mission, mostly due to the time it takes to POST!&lt;/p>
+&lt;p>Some facts:&lt;/p>
+&lt;ul>
+&lt;li>The board takes 2 minutes to initialize and POST, which is much longer than it takes
+to boot Linux.&lt;/li>
+&lt;li>Cost me only £50 from eBay.&lt;/li>
+&lt;li>Is probably not worth the effort, but whatever.&lt;/li>
+&lt;/ul>
+&lt;h1 id="the-problem">The problem&lt;/h1>
+&lt;p>Attempts to install any OS in EFI mode results in the BIOS of the S5520UR
+seemingly being unable to see the &lt;code>.efi&lt;/code> file on the disk, meaning you can&amp;rsquo;t
+really boot anything if you try, since it won&amp;rsquo;t show up in the Boot Menu or Boot
+Manager of the BIOS.&lt;/p>
+&lt;p>For some reason, the NixOS Installer Media shows up in the BIOS as &lt;code>EFI:Corsair Voyager SliderX2000AHD(Part1,Sig9FB6382F&lt;/code> which is correct. I can&amp;rsquo;t replicate
+this behavior via the installation of any OS. Only this installer media seems to
+have the correct configuration to be auto-detected by the S5520UR&amp;rsquo;s UEFI
+implementation when flashed to a USB flash drive.&lt;/p>
+&lt;p>Upon a quick Google you can &lt;a href="https://www.reddit.com/r/servers/comments/ar3k6y/trying_to_install_windows_to_an_intel_s5520ur/">this post on
+Reddit&lt;/a>
+entitled &lt;em>&amp;ldquo;Trying to install Windows to an Intel S5520UR board with RAID0 SAS
+array. Gets stuck on &amp;ldquo;Copying files (0%)&amp;rdquo;. Help?&amp;quot;&lt;/em>&lt;/p>
+&lt;blockquote>
+&lt;p>I was able to fix the problem. &lt;strong>Don&amp;rsquo;t try to install Windows in EFI mode only&lt;/strong>,
+this causes the freeze. I guess these kind of servers are just too old.&lt;/p>
+&lt;/blockquote>
+&lt;p>They also gave up. Unacceptable.&lt;/p>
+&lt;p>So, what can it be? I happen to be trying to install NixOS, which gives me an
+advantage in both trying out various bootloader configurations and explaining
+what I tried.&lt;/p>
+&lt;h1 id="first-attempts">First attempts&lt;/h1>
+&lt;p>First, I try systemd-boot:&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-nix" data-lang="nix">{
+boot&lt;span style="color:#f92672">.&lt;/span>loader&lt;span style="color:#f92672">.&lt;/span>systemd-boot&lt;span style="color:#f92672">.&lt;/span>enable &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#66d9ef">true&lt;/span>;
+}
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;a href="https://www.dictionary.com/browse/nix">Nix&lt;/a>. The disk does not appear as a bootable device in the BIOS.&lt;/p>
+&lt;p>What about systemd-boot, but this time giving it the ability to touch variables in
+&lt;code>/sys/firmware/efi/efivars/&lt;/code>?&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-nix" data-lang="nix">{
+boot&lt;span style="color:#f92672">.&lt;/span>loader &lt;span style="color:#f92672">=&lt;/span> {
+systemd-boot&lt;span style="color:#f92672">.&lt;/span>enable &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#66d9ef">true&lt;/span>;
+canTouchEfiVariables &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#66d9ef">true&lt;/span>;
+};
+}
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>This halts the CPU. So what about GRUB?&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-nix" data-lang="nix">{
+boot&lt;span style="color:#f92672">.&lt;/span>loader &lt;span style="color:#f92672">=&lt;/span> {
+efi &lt;span style="color:#f92672">=&lt;/span> {
+canTouchEfiVariables &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#66d9ef">false&lt;/span>;
+};
+grub &lt;span style="color:#f92672">=&lt;/span> {
+efiSupport &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#66d9ef">true&lt;/span>;
+device &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;nodev&amp;#34;&lt;/span>;
+};
+};
+}
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>The same result. No &lt;code>EFI:&amp;lt;disk&amp;gt;&lt;/code> option in the BIOS for the installation. The
+CPU still halts if &lt;code>boot.loader.efi.canTouchEfiVariables = true;&lt;/code>&lt;/p>
+&lt;p>I saw &lt;a href="https://nixos.wiki/wiki/Bootloader#Wrangling_recalcitrant_UEFI_implementations">this
+section&lt;/a>
+of the nixos.wiki on &amp;ldquo;Wrangling recalcitrant UEFI implementations&amp;rdquo; and decided
+to try and copy the &lt;code>.efi&lt;/code> file for systemd-boot from
+&lt;code>/boot/EFI/systemd/systemd-bootx64.efi&lt;/code> to &lt;code>/EFI/Microsoft/Boot/bootmgfw.efi&lt;/code>. I
+was quite smug and hopeful about this one, but still, it did not work. But it
+would have been an awesome hack if it did.&lt;/p>
+&lt;h1 id="refind">rEFInd&lt;/h1>
+&lt;p>The NixOS installer comes with a tool called rEFInd when booted in EFI mode. If
+I select and use it, it successfully detects my previous attempts, be it GRUB or
+systemd-boot, and successfully allows me to boot those bootloaders in EFI mode.
+Now it&amp;rsquo;s getting interesting.&lt;/p>
+&lt;h1 id="getting-closer">Getting Closer&lt;/h1>
+&lt;p>There is a section in the nixos.wiki that mentions an interesting option that
+I&amp;rsquo;ve never seen before, called &lt;code>boot.loader.grub.efiInstallAsRemovable&lt;/code>. I
+decide to try it out, but I still get no results. However, I find &lt;a href="https://github.com/NixOS/nixpkgs/pull/35528">this pull
+request&lt;/a> from NixOS contributor
+&amp;lsquo;samueldr&amp;rsquo; which reiterates some of my issues with EFI boot and how this option
+might have some impact on it.&lt;/p>
+&lt;p>I waste no time. I enter the NixOS Matrix Channel and tag @samueldr and describe
+the issue exactly. He informs me that that pull request has nothing to do with
+my problem, but that my UEFI implementation is buggy if this doesn&amp;rsquo;t work, since
+all UEFI implementations should fallback to a default EFI program when present;
+which in this case should be my &lt;code>efiInstallAsRemovable&lt;/code> GRUB.&lt;/p>
+&lt;h1 id="epiphany">Epiphany&lt;/h1>
+&lt;p>Finally. We discover that there is an option in the BIOS named &amp;ldquo;Add new boot
+option&amp;rdquo;. It turns out that this must be manually invoked and passed an absolute
+path to the location of the &lt;code>.efi&lt;/code> file on disk if you ever hope to boot
+anything with EFI.&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>Step 1&lt;/th>
+&lt;th>Step 2&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;img src="https://blog.croughan.sh/uefi-bios1.webp" alt="">&lt;/td>
+&lt;td>&lt;img src="https://blog.croughan.sh/uefi-bios2.webp" alt="">&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;p>So I do it, I label it &lt;code>maybe-nixos&lt;/code>, I give it a path to the &lt;code>.efi&lt;/code> file
+&lt;code>\efi\boot\bootx64.efi&lt;/code>. Then, I try to boot it. It boots without the
+assistance of rEFInd.&lt;/p>
+&lt;h1 id="takeaway">Takeaway&lt;/h1>
+&lt;p>The S5520UR:&lt;/p>
+&lt;ul>
+&lt;li>Won&amp;rsquo;t use fallback locations&lt;/li>
+&lt;li>Touching &lt;code>/sys/firmware/efi/efivars/&lt;/code> halts the CPU&lt;/li>
+&lt;li>Apparently requires completely manual setup and configuration of the EFI boot via human fingers&lt;/li>
+&lt;li>Is hot trash.&lt;/li>
+&lt;/ul>
+&lt;p>The only documentation I can find for this that could possibly help a normal
+user of the motherboard is buried in the &lt;a href="https://techlibrary.hpe.com/docs/iss/proliant_uefi/UEFI_TM_030617/s_adding_boot_option.html">Aptio HPE
+documentation&lt;/a>&lt;/p></content></item><item><title>Lustrating My Frustrating Arch Install (De-Antergosifying)</title><link>https://blog.croughan.sh/posts/lustrating-arch/</link><pubDate>Wed, 11 Nov 2020 23:25:09 +0000</pubDate><guid>https://blog.croughan.sh/posts/lustrating-arch/</guid><description>lustrate
 /ˈlʌstreɪt/
 verb
 purify by expiatory sacrifice, ceremonial washing, or some other ritual action. &amp;ldquo;a soul lustrated in the baptismal waters&amp;rdquo;
