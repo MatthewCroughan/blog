@@ -1,5 +1,5 @@
 +++
-title = "Lustrating My Frustrating Arch Install (De-Antergosifying)"
+title = "My Frustrating Arch Install (De-Antergosifying)"
 date = 2020-11-11T23:25:09Z
 cover = "./defenestratergos.webp"
 tags = ["linux", "arch", ""]
