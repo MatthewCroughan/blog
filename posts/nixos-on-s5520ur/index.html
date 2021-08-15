@@ -16,11 +16,12 @@ nobody can decide how to implement it? Some BIOSes hardcode paths to
 <code>/EFI/Microsoft/Boot/bootmgfw.efi</code>, probably because some of these companies
 only care about Windows and screwed it up for the rest of us.</p><p>The first machine I ever ran Linux on was an Intel Server Board S5520UR. It
 taught me Linux, I had no experience prior to it, it has taught me a lot of
-things, but today it taught me a little bit about UEFI. Intel created UEFI, yet
-this board has a broken UEFI implementation (irony?). For 3 years, I gave up
-trying to install anything in EFI mode with this board, thinking it was
-impossible. But today, I decided I wasn&rsquo;t content with that, so went on an 8
-hour mission, mostly due to the time it takes to POST!</p><p>Some facts:</p><ul><li>The board takes 2 minutes to initialize and POST, which is much longer than it takes
+things, but today it taught me a little bit about UEFI. Intel gets the most
+credit for creating UEFI in various articles, yet this board has one of the most
+broken UEFI implementations (irony?). For 3 years, I gave up trying to install
+anything in EFI mode with this board, thinking it was impossible. But today, I
+decided I wasn&rsquo;t content with that, so went on an 8 hour mission, mostly due to
+the time it takes to POST!</p><p>Some facts:</p><ul><li>The board takes 2 minutes to initialize and POST, which is much longer than it takes
 to boot Linux.</li><li>Cost me only £50 from eBay.</li><li>Is probably not worth the effort, but whatever.</li></ul><h1 id=the-problem>The problem<a href=#the-problem class=hanchor arialabel=Anchor>&#8983;</a></h1><p>Attempts to install any OS in EFI mode results in the BIOS of the S5520UR
 seemingly being unable to see the <code>.efi</code> file on the disk, meaning you can&rsquo;t
 really boot anything if you try, since it won&rsquo;t show up in the Boot Menu or Boot

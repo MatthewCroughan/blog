@@ -13,11 +13,12 @@ nobody can decide how to implement it? Some BIOSes hardcode paths to
 only care about Windows and screwed it up for the rest of us.&lt;/p>
 &lt;p>The first machine I ever ran Linux on was an Intel Server Board S5520UR. It
 taught me Linux, I had no experience prior to it, it has taught me a lot of
-things, but today it taught me a little bit about UEFI. Intel created UEFI, yet
-this board has a broken UEFI implementation (irony?). For 3 years, I gave up
-trying to install anything in EFI mode with this board, thinking it was
-impossible. But today, I decided I wasn&amp;rsquo;t content with that, so went on an 8
-hour mission, mostly due to the time it takes to POST!&lt;/p>
+things, but today it taught me a little bit about UEFI. Intel gets the most
+credit for creating UEFI in various articles, yet this board has one of the most
+broken UEFI implementations (irony?). For 3 years, I gave up trying to install
+anything in EFI mode with this board, thinking it was impossible. But today, I
+decided I wasn&amp;rsquo;t content with that, so went on an 8 hour mission, mostly due to
+the time it takes to POST!&lt;/p>
 &lt;p>Some facts:&lt;/p>
 &lt;ul>
 &lt;li>The board takes 2 minutes to initialize and POST, which is much longer than it takes
