@@ -90,15 +90,16 @@ Now it&amp;rsquo;s getting interesting.&lt;/p>
 &lt;h1 id="getting-closer">Getting Closer&lt;/h1>
 &lt;p>There is a section in the nixos.wiki that mentions an interesting option that
 I&amp;rsquo;ve never seen before, called &lt;code>boot.loader.grub.efiInstallAsRemovable&lt;/code>. I
-decide to try it out, but I still get no results. However, I find &lt;a href="https://github.com/NixOS/nixpkgs/pull/35528">this pull
-request&lt;/a> from NixOS contributor
-&amp;lsquo;samueldr&amp;rsquo; which reiterates some of my issues with EFI boot and how this option
-might have some impact on it.&lt;/p>
+decide to try it out, but I still get the same result. However, I find &lt;a href="https://github.com/NixOS/nixpkgs/pull/35528">this
+pull request&lt;/a> from NixOS
+contributor &amp;lsquo;samueldr&amp;rsquo; which reiterates some of my issues with EFI boot. I
+believed it was possible that this option might have some impact on it.&lt;/p>
 &lt;p>I waste no time. I enter the NixOS Matrix Channel and tag @samueldr and describe
 the issue exactly. He informs me that that pull request has nothing to do with
-my problem, but that my UEFI implementation is buggy if this doesn&amp;rsquo;t work, since
-all UEFI implementations should fallback to a default EFI program when present;
-which in this case should be my &lt;code>efiInstallAsRemovable&lt;/code> GRUB.&lt;/p>
+my problem, but that my UEFI implementation is buggy if this doesn&amp;rsquo;t work as a
+&amp;ldquo;fallback&amp;rdquo;. It turns out that all UEFI implementations should fallback to a
+default EFI program when present; which in this case should be the GRUB I just
+installed with &lt;code>efiInstallAsRemovable = true;&lt;/code>.&lt;/p>
 &lt;h1 id="epiphany">Epiphany&lt;/h1>
 &lt;p>Finally. We discover that there is an option in the BIOS named &amp;ldquo;Add new boot
 option&amp;rdquo;. It turns out that this must be manually invoked and passed an absolute
@@ -122,10 +123,10 @@ anything with EFI.&lt;/p>
 &lt;code>\efi\boot\bootx64.efi&lt;/code>. Then, I try to boot it. It boots without the
 assistance of rEFInd.&lt;/p>
 &lt;h1 id="takeaway">Takeaway&lt;/h1>
-&lt;p>The S5520UR:&lt;/p>
+&lt;p>S5520UR:&lt;/p>
 &lt;ul>
 &lt;li>Won&amp;rsquo;t use fallback locations&lt;/li>
-&lt;li>Touching &lt;code>/sys/firmware/efi/efivars/&lt;/code> halts the CPU&lt;/li>
+&lt;li>Halts the CPU when &lt;code>/sys/firmware/efi/efivars/&lt;/code> is poked&lt;/li>
 &lt;li>Apparently requires completely manual setup and configuration of the EFI boot via human fingers&lt;/li>
 &lt;li>Is hot trash.&lt;/li>
 &lt;/ul>

@@ -67,19 +67,20 @@ I select and use it, it successfully detects my previous attempts, be it GRUB or
 systemd-boot, and successfully allows me to boot those bootloaders in EFI mode.
 Now it&rsquo;s getting interesting.</p><h1 id=getting-closer>Getting Closer<a href=#getting-closer class=hanchor arialabel=Anchor>&#8983;</a></h1><p>There is a section in the nixos.wiki that mentions an interesting option that
 I&rsquo;ve never seen before, called <code>boot.loader.grub.efiInstallAsRemovable</code>. I
-decide to try it out, but I still get no results. However, I find <a href=https://github.com/NixOS/nixpkgs/pull/35528>this pull
-request</a> from NixOS contributor
-&lsquo;samueldr&rsquo; which reiterates some of my issues with EFI boot and how this option
-might have some impact on it.</p><p>I waste no time. I enter the NixOS Matrix Channel and tag @samueldr and describe
+decide to try it out, but I still get the same result. However, I find <a href=https://github.com/NixOS/nixpkgs/pull/35528>this
+pull request</a> from NixOS
+contributor &lsquo;samueldr&rsquo; which reiterates some of my issues with EFI boot. I
+believed it was possible that this option might have some impact on it.</p><p>I waste no time. I enter the NixOS Matrix Channel and tag @samueldr and describe
 the issue exactly. He informs me that that pull request has nothing to do with
-my problem, but that my UEFI implementation is buggy if this doesn&rsquo;t work, since
-all UEFI implementations should fallback to a default EFI program when present;
-which in this case should be my <code>efiInstallAsRemovable</code> GRUB.</p><h1 id=epiphany>Epiphany<a href=#epiphany class=hanchor arialabel=Anchor>&#8983;</a></h1><p>Finally. We discover that there is an option in the BIOS named &ldquo;Add new boot
+my problem, but that my UEFI implementation is buggy if this doesn&rsquo;t work as a
+&ldquo;fallback&rdquo;. It turns out that all UEFI implementations should fallback to a
+default EFI program when present; which in this case should be the GRUB I just
+installed with <code>efiInstallAsRemovable = true;</code>.</p><h1 id=epiphany>Epiphany<a href=#epiphany class=hanchor arialabel=Anchor>&#8983;</a></h1><p>Finally. We discover that there is an option in the BIOS named &ldquo;Add new boot
 option&rdquo;. It turns out that this must be manually invoked and passed an absolute
 path to the location of the <code>.efi</code> file on disk if you ever hope to boot
 anything with EFI.</p><table><thead><tr><th>Step 1</th><th>Step 2</th></tr></thead><tbody><tr><td><img src=/uefi-bios1.webp alt></td><td><img src=/uefi-bios2.webp alt></td></tr></tbody></table><p>So I do it, I label it <code>maybe-nixos</code>, I give it a path to the <code>.efi</code> file
 <code>\efi\boot\bootx64.efi</code>. Then, I try to boot it. It boots without the
-assistance of rEFInd.</p><h1 id=takeaway>Takeaway<a href=#takeaway class=hanchor arialabel=Anchor>&#8983;</a></h1><p>The S5520UR:</p><ul><li>Won&rsquo;t use fallback locations</li><li>Touching <code>/sys/firmware/efi/efivars/</code> halts the CPU</li><li>Apparently requires completely manual setup and configuration of the EFI boot via human fingers</li><li>Is hot trash.</li></ul><p>The only documentation I can find for this that could possibly help a normal
+assistance of rEFInd.</p><h1 id=takeaway>Takeaway<a href=#takeaway class=hanchor arialabel=Anchor>&#8983;</a></h1><p>S5520UR:</p><ul><li>Won&rsquo;t use fallback locations</li><li>Halts the CPU when <code>/sys/firmware/efi/efivars/</code> is poked</li><li>Apparently requires completely manual setup and configuration of the EFI boot via human fingers</li><li>Is hot trash.</li></ul><p>The only documentation I can find for this that could possibly help a normal
 user of the motherboard is buried in the <a href=https://techlibrary.hpe.com/docs/iss/proliant_uefi/UEFI_TM_030617/s_adding_boot_option.html>Aptio HPE
 documentation</a></p></div></div><div class=pagination><div class=pagination__title><span class=pagination__title-h>Read other posts</span><hr></div><div class=pagination__buttons><span class="button next"><a href=https://blog.croughan.sh/posts/lustrating-arch/><span class=button__text>Lustrating My Frustrating Arch Install (De-Antergosifying)</span>
 <span class=button__icon>→</span></a></span></div></div></div></div><footer class=footer><div class=footer__inner><div class=copyright><span>© 2021 Powered by <a href=http://gohugo.io>Hugo</a></span>
