@@ -67,7 +67,7 @@ you are trying to send. It also doesn&amp;rsquo;t even give you as good of a com
 ratio as gzip. Since &lt;code>hyp beam&lt;/code> only cares about piping data, we can make up our
 own method of sending the folder, by using &lt;code>tar&lt;/code>.&lt;/p>
 &lt;pre>&lt;code># Sender (Sending the Folder)
-tar cf - &amp;lt;folder-name&amp;gt; | hyp beam &amp;quot;test&amp;quot;
+tar cf - &amp;lt;folder-name&amp;gt; | hyp beam &amp;quot;secret&amp;quot;
 # Receiver (Receiving the Folder)
 hyp beam &amp;quot;secret&amp;quot; | tar xvf -
 &lt;/code>&lt;/pre>&lt;p>You could easily invent shell aliases such as &lt;code>send-to-matt&lt;/code> or &lt;code>receive-matt&lt;/code>

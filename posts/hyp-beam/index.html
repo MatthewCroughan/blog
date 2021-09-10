@@ -57,7 +57,7 @@ can take a very long time and requires you to have as much RAM as the filesize
 you are trying to send. It also doesn&rsquo;t even give you as good of a compression
 ratio as gzip. Since <code>hyp beam</code> only cares about piping data, we can make up our
 own method of sending the folder, by using <code>tar</code>.</p><pre><code># Sender (Sending the Folder)
-tar cf - &lt;folder-name&gt; | hyp beam &quot;test&quot;
+tar cf - &lt;folder-name&gt; | hyp beam &quot;secret&quot;
 
 # Receiver (Receiving the Folder)
 hyp beam &quot;secret&quot; | tar xvf -
