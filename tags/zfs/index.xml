@@ -75,4 +75,5 @@ hyp beam &amp;quot;secret&amp;quot; | tar xvf -
 ready to pack/unpack files, hiding the &lt;code>tar&lt;/code> command from sight such that this
 feels like a proper application for sending and recieving files rather than
 having to remember the &lt;code>tar&lt;/code> syntax each time.&lt;/p>
-&lt;h1 id="what-will-you-use-it-for">What will you use it for?&lt;/h1></content></item></channel></rss>
+&lt;h1 id="what-will-you-use-it-for">What will you use it for?&lt;/h1>
+&lt;p>&lt;a href="https://hypercore-protocol.org/protocol/">https://hypercore-protocol.org/protocol/&lt;/a>&lt;/p></content></item></channel></rss>

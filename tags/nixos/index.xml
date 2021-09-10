@@ -75,7 +75,8 @@ hyp beam &amp;quot;secret&amp;quot; | tar xvf -
 ready to pack/unpack files, hiding the &lt;code>tar&lt;/code> command from sight such that this
 feels like a proper application for sending and recieving files rather than
 having to remember the &lt;code>tar&lt;/code> syntax each time.&lt;/p>
-&lt;h1 id="what-will-you-use-it-for">What will you use it for?&lt;/h1></content></item><item><title>NixOS + the Worst UEFI ever (S5520UR)</title><link>https://blog.croughan.sh/posts/nixos-on-s5520ur/</link><pubDate>Sun, 15 Aug 2021 03:51:17 +0100</pubDate><guid>https://blog.croughan.sh/posts/nixos-on-s5520ur/</guid><description>If you read the Wikipedia Page on UEFI you will notice there are a few things missing.
+&lt;h1 id="what-will-you-use-it-for">What will you use it for?&lt;/h1>
+&lt;p>&lt;a href="https://hypercore-protocol.org/protocol/">https://hypercore-protocol.org/protocol/&lt;/a>&lt;/p></content></item><item><title>NixOS + the Worst UEFI ever (S5520UR)</title><link>https://blog.croughan.sh/posts/nixos-on-s5520ur/</link><pubDate>Sun, 15 Aug 2021 03:51:17 +0100</pubDate><guid>https://blog.croughan.sh/posts/nixos-on-s5520ur/</guid><description>If you read the Wikipedia Page on UEFI you will notice there are a few things missing.
 The first thing that is missing is names. The second is the word &amp;lsquo;engineer&amp;rsquo;. Did humans make this? Is any one responsible? Who is to blame? UEFI was designed by a comittee, so no one can be held accountable.
 More digging tells me that UEFI was developed by over 140 technology companies as part of a UEFI consortium.</description><content>&lt;p>If you read &lt;a href="https://en.wikipedia.org/wiki/Unified_Extensible_Firmware_Interface">the Wikipedia Page on
 UEFI&lt;/a> you
