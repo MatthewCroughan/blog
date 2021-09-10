@@ -50,6 +50,19 @@ ffmpeg -vcodec mjpeg -i /dev/video0 -f avi - | tee -- &gt;(hyp beam &quot;1234&q
 hyp beam &quot;1234&quot; | mpv -
 # Client 2
 hyp beam &quot;5678&quot; | mpv -
-</code></pre><h1 id=what-will-you-use-it-for>What will you use it for?<a href=#what-will-you-use-it-for class=hanchor arialabel=Anchor>&#8983;</a></h1></div></div><div class=pagination><div class=pagination__title><span class=pagination__title-h>Read other posts</span><hr></div><div class=pagination__buttons><span class="button next"><a href=https://blog.croughan.sh/posts/nixos-on-s5520ur/><span class=button__text>NixOS + the Worst UEFI ever (S5520UR)</span>
+</code></pre><h1 id=sharing-files-with-linux-savvy-friends>Sharing files with Linux savvy friends<a href=#sharing-files-with-linux-savvy-friends class=hanchor arialabel=Anchor>&#8983;</a></h1><p>Sometimes I want to share folders or files with friends. Usually I would use
+<code>magic-wormhole</code> for this, but one of the annoying things about that program is
+that if you want to end a folder it first has to be zipped. That <code>zip</code> process
+can take a very long time, and doesn&rsquo;t even give you as good of a compression
+ratio as gzip. Since <code>hyp beam</code> only cares about piping data, we can make up our
+own method of sending the folder, by using <code>tar</code>.</p><pre><code># Sender (Sending the Folder)
+tar cf - &lt;folder-name&gt; | hyp beam &quot;test&quot;
+
+# Receiver (Receiving the Folder)
+hyp beam &quot;secret&quot; | tar xvf -
+</code></pre><p>You could easily invent shell aliases such as <code>send-to-matt</code> or <code>receive-matt</code>
+ready to pack/unpack files, hiding the <code>tar</code> command from sight such that this
+feels like a proper application for sending and recieving files rather than
+having to remember the <code>tar</code> syntax each time.</p><h1 id=what-will-you-use-it-for>What will you use it for?<a href=#what-will-you-use-it-for class=hanchor arialabel=Anchor>&#8983;</a></h1></div></div><div class=pagination><div class=pagination__title><span class=pagination__title-h>Read other posts</span><hr></div><div class=pagination__buttons><span class="button next"><a href=https://blog.croughan.sh/posts/nixos-on-s5520ur/><span class=button__text>NixOS + the Worst UEFI ever (S5520UR)</span>
 <span class=button__icon>→</span></a></span></div></div></div></div><footer class=footer><div class=footer__inner><div class=copyright><span>© 2021 Powered by <a href=http://gohugo.io>Hugo</a></span>
 <span>:: Theme made by <a href=https://twitter.com/panr>panr</a></span></div></div></footer><script src=https://blog.croughan.sh/assets/main.js></script><script src=https://blog.croughan.sh/assets/prism.js></script></div></body></html>

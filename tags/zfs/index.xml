@@ -58,4 +58,19 @@ ffmpeg -vcodec mjpeg -i /dev/video0 -f avi - | tee -- &amp;gt;(hyp beam &amp;quo
 hyp beam &amp;quot;1234&amp;quot; | mpv -
 # Client 2
 hyp beam &amp;quot;5678&amp;quot; | mpv -
-&lt;/code>&lt;/pre>&lt;h1 id="what-will-you-use-it-for">What will you use it for?&lt;/h1></content></item></channel></rss>
+&lt;/code>&lt;/pre>&lt;h1 id="sharing-files-with-linux-savvy-friends">Sharing files with Linux savvy friends&lt;/h1>
+&lt;p>Sometimes I want to share folders or files with friends. Usually I would use
+&lt;code>magic-wormhole&lt;/code> for this, but one of the annoying things about that program is
+that if you want to end a folder it first has to be zipped. That &lt;code>zip&lt;/code> process
+can take a very long time, and doesn&amp;rsquo;t even give you as good of a compression
+ratio as gzip. Since &lt;code>hyp beam&lt;/code> only cares about piping data, we can make up our
+own method of sending the folder, by using &lt;code>tar&lt;/code>.&lt;/p>
+&lt;pre>&lt;code># Sender (Sending the Folder)
+tar cf - &amp;lt;folder-name&amp;gt; | hyp beam &amp;quot;test&amp;quot;
+# Receiver (Receiving the Folder)
+hyp beam &amp;quot;secret&amp;quot; | tar xvf -
+&lt;/code>&lt;/pre>&lt;p>You could easily invent shell aliases such as &lt;code>send-to-matt&lt;/code> or &lt;code>receive-matt&lt;/code>
+ready to pack/unpack files, hiding the &lt;code>tar&lt;/code> command from sight such that this
+feels like a proper application for sending and recieving files rather than
+having to remember the &lt;code>tar&lt;/code> syntax each time.&lt;/p>
+&lt;h1 id="what-will-you-use-it-for">What will you use it for?&lt;/h1></content></item></channel></rss>
