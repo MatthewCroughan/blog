@@ -13,9 +13,10 @@ called <a href=https://hypercore-protocol.org/guides/modules/hyperswarm/>Hypersw
 not too dissimilar from what Bittorrent clients have always done; although its
 usage of mDNS is quite unique and cool.</p><p>Hypercore Beams are end to end encrypted. There&rsquo;s no overhead that I can
 measure, and it can be used directly in place of netcat. IP Address, network
-conditions, network port, all cease to matter since with <code>hyp</code> since we only care
-about piping data between processes. So what are some of the things I use it
-for?</p><h1 id=sending-zfs-datasets-around-the-internet>Sending ZFS datasets around the internet<a href=#sending-zfs-datasets-around-the-internet class=hanchor arialabel=Anchor>&#8983;</a></h1><p><img src=/hyperzfs.png alt=image></p><p>Usually, <code>zfs send</code> requires LAN connectivity, or a VPN, which is a pain to
+conditions, network port, all cease to matter since with <code>hyp</code> since we only
+care about piping data between processes. A shared secret you pass to the
+command which can be as simple as a set of words is used as an identifier, in
+place of an IP address. So what are some of the things I use it for?</p><h1 id=sending-zfs-datasets-around-the-internet>Sending ZFS datasets around the internet<a href=#sending-zfs-datasets-around-the-internet class=hanchor arialabel=Anchor>&#8983;</a></h1><p><img src=/hyperzfs.png alt=image></p><p>Usually, <code>zfs send</code> requires LAN connectivity, or a VPN, which is a pain to
 think about. Why think about where your machines are? With <code>hyp beam</code> I can just
 push and pull ZFS datasets through an encrypted tunnel without caring where I am
 in the world.</p><pre><code>## Machine 1
@@ -23,8 +24,9 @@ zfs send eggshells/data | hyp beam &quot;secret words&quot;
 ## Machine 2
 hyp beam &quot;secret words&quot; | zfs recv zpool/data
 </code></pre><p>Machine 1 pipes <code>zfs send</code> into <code>hyp beam</code> which chooses a secret. This secret
-can be any string in <code>hyp beam "&lt;secret>"</code>. Machine 2 then pipes the output of
-<code>hyp beam "&lt;secret>"</code> into <code>zfs recv</code>. How simple is that?</p><p>Sidenote: I call one of my pools <code>eggshells</code> because often whenever I interact
+can be any string in <code>hyp beam "&lt;secret>"</code>. This secret is then used as an
+identifier, it is all you need to establish communication between the two
+machines. Machine 2 then pipes the output of <code>hyp beam "&lt;secret>"</code> into <code>zfs recv</code>. How simple is that?</p><p>Sidenote: I call one of my pools <code>eggshells</code> because often whenever I interact
 with it, it&rsquo;s like <a href=https://dictionary.cambridge.org/dictionary/english/walk-be-on-eggshells>walking on
 eggshells.</a></p><h1 id=video-streams-over-the-wan>Video streams over the WAN<a href=#video-streams-over-the-wan class=hanchor arialabel=Anchor>&#8983;</a></h1><p><img src=/hypermpv.png alt=image></p><p>Sending Video over <code>hyp beam</code> is surprisingly practical. It&rsquo;s a good
 demonstrator of how <code>hyp beam</code> can be used in place of <code>nc</code>. Once you realize

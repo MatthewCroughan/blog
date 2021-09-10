@@ -9,9 +9,10 @@ not too dissimilar from what Bittorrent clients have always done; although its
 usage of mDNS is quite unique and cool.&lt;/p>
 &lt;p>Hypercore Beams are end to end encrypted. There&amp;rsquo;s no overhead that I can
 measure, and it can be used directly in place of netcat. IP Address, network
-conditions, network port, all cease to matter since with &lt;code>hyp&lt;/code> since we only care
-about piping data between processes. So what are some of the things I use it
-for?&lt;/p>
+conditions, network port, all cease to matter since with &lt;code>hyp&lt;/code> since we only
+care about piping data between processes. A shared secret you pass to the
+command which can be as simple as a set of words is used as an identifier, in
+place of an IP address. So what are some of the things I use it for?&lt;/p>
 &lt;h1 id="sending-zfs-datasets-around-the-internet">Sending ZFS datasets around the internet&lt;/h1>
 &lt;p>&lt;img src="https://blog.croughan.sh/hyperzfs.png" alt="image">&lt;/p>
 &lt;p>Usually, &lt;code>zfs send&lt;/code> requires LAN connectivity, or a VPN, which is a pain to
@@ -23,8 +24,9 @@ zfs send eggshells/data | hyp beam &amp;quot;secret words&amp;quot;
 ## Machine 2
 hyp beam &amp;quot;secret words&amp;quot; | zfs recv zpool/data
 &lt;/code>&lt;/pre>&lt;p>Machine 1 pipes &lt;code>zfs send&lt;/code> into &lt;code>hyp beam&lt;/code> which chooses a secret. This secret
-can be any string in &lt;code>hyp beam &amp;quot;&amp;lt;secret&amp;gt;&amp;quot;&lt;/code>. Machine 2 then pipes the output of
-&lt;code>hyp beam &amp;quot;&amp;lt;secret&amp;gt;&amp;quot;&lt;/code> into &lt;code>zfs recv&lt;/code>. How simple is that?&lt;/p>
+can be any string in &lt;code>hyp beam &amp;quot;&amp;lt;secret&amp;gt;&amp;quot;&lt;/code>. This secret is then used as an
+identifier, it is all you need to establish communication between the two
+machines. Machine 2 then pipes the output of &lt;code>hyp beam &amp;quot;&amp;lt;secret&amp;gt;&amp;quot;&lt;/code> into &lt;code>zfs recv&lt;/code>. How simple is that?&lt;/p>
 &lt;p>Sidenote: I call one of my pools &lt;code>eggshells&lt;/code> because often whenever I interact
 with it, it&amp;rsquo;s like &lt;a href="https://dictionary.cambridge.org/dictionary/english/walk-be-on-eggshells">walking on
 eggshells.&lt;/a>&lt;/p>
