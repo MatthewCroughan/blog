@@ -36,7 +36,7 @@ that this is just a peer to peer link to send data through with no overhead, it
 ceases to be impressive. The ease of use is what is amazing.&lt;/p>
 &lt;p>The following will use fancy bash wankery to create two FIFO pipes with which to
 transmit video data from &lt;code>ffmpeg&lt;/code> through. Such that two clients can watch the
-video anywhere in the world via Hypercore, or Netcat.&lt;/p>
+video via Netcat, or anywhere in the world via Hypercore.&lt;/p>
 &lt;h2 id="with-netcat">With Netcat&lt;/h2>
 &lt;p>This requires you to know the IP address of the machine, and have a direct
 connection via LAN/VPN.&lt;/p>

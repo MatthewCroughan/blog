@@ -31,7 +31,7 @@ demonstrator of how <code>hyp beam</code> can be used in place of <code>nc</code
 that this is just a peer to peer link to send data through with no overhead, it
 ceases to be impressive. The ease of use is what is amazing.</p><p>The following will use fancy bash wankery to create two FIFO pipes with which to
 transmit video data from <code>ffmpeg</code> through. Such that two clients can watch the
-video anywhere in the world via Hypercore, or Netcat.</p><h2 id=with-netcat>With Netcat<a href=#with-netcat class=hanchor arialabel=Anchor>&#8983;</a></h2><p>This requires you to know the IP address of the machine, and have a direct
+video via Netcat, or anywhere in the world via Hypercore.</p><h2 id=with-netcat>With Netcat<a href=#with-netcat class=hanchor arialabel=Anchor>&#8983;</a></h2><p>This requires you to know the IP address of the machine, and have a direct
 connection via LAN/VPN.</p><pre><code>## Sending
 ffmpeg -vcodec mjpeg -i /dev/video0 -f avi - | tee -- &gt;(nc -l 1234) &gt;(nc -l 5678) &gt; /dev/null; wait
 
