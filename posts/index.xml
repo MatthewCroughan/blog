@@ -1,4 +1,63 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on Matthew Croughan's Blog</title><link>https://blog.croughan.sh/posts/</link><description>Recent content in Posts on Matthew Croughan's Blog</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Sun, 15 Aug 2021 03:51:17 +0100</lastBuildDate><atom:link href="https://blog.croughan.sh/posts/index.xml" rel="self" type="application/rss+xml"/><item><title>NixOS + the Worst UEFI ever (S5520UR)</title><link>https://blog.croughan.sh/posts/nixos-on-s5520ur/</link><pubDate>Sun, 15 Aug 2021 03:51:17 +0100</pubDate><guid>https://blog.croughan.sh/posts/nixos-on-s5520ur/</guid><description>If you read the Wikipedia Page on UEFI you will notice there are a few things missing.
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on Matthew Croughan's Blog</title><link>https://blog.croughan.sh/posts/</link><description>Recent content in Posts on Matthew Croughan's Blog</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Tue, 24 Aug 2021 01:51:58 +0100</lastBuildDate><atom:link href="https://blog.croughan.sh/posts/index.xml" rel="self" type="application/rss+xml"/><item><title>Hypercore Beam - Break Through NAT With This One Weird Trick</title><link>https://blog.croughan.sh/posts/hyp-beam/</link><pubDate>Tue, 24 Aug 2021 01:51:58 +0100</pubDate><guid>https://blog.croughan.sh/posts/hyp-beam/</guid><description>hyp beam can be thought of as a drop-in replacement for nc, for those situations where you just can&amp;rsquo;t be bothered to set up a VPN or establish a network link between two machines. Usually I use Tailscale. It provides the user with a method of breaking through NAT and transferring data via Hypercore. Peer discovery happens via DHT/mDNS using a concept called Hyperswarm, not too dissimilar from what Bittorrent clients have always done.</description><content>&lt;p>&lt;code>hyp beam&lt;/code> can be thought of as a drop-in replacement for &lt;code>nc&lt;/code>, for those
+situations where you just can&amp;rsquo;t be bothered to set up a VPN or establish a
+network link between two machines. Usually I use
+&lt;a href="https://tailscale.com/">Tailscale&lt;/a>. It provides the user with a method of
+breaking through NAT and transferring data via Hypercore. Peer discovery happens
+via DHT/mDNS using a concept called
+&lt;a href="https://hypercore-protocol.org/guides/modules/hyperswarm/">Hyperswarm&lt;/a>, not too
+dissimilar from what Bittorrent clients have always done.&lt;/p>
+&lt;p>Hypercore Beams are end to end encrypted. There&amp;rsquo;s no overhead that I can
+measure, and it can be used directly in place of netcat. IP Address, network
+conditions, network port, all cease to matter since with &lt;code>hyp&lt;/code> we only care
+about piping data between processes. So what are some of the things I use it
+for?&lt;/p>
+&lt;h1 id="sending-zfs-datasets-around-the-internet">Sending ZFS datasets around the internet&lt;/h1>
+&lt;p>&lt;img src="https://blog.croughan.sh/hyperzfs.png" alt="image">&lt;/p>
+&lt;p>Usually, &lt;code>zfs send&lt;/code> requires LAN connectivity, or a VPN, which is a pain to
+think about. Why think about where your machines are? With &lt;code>hyp beam&lt;/code> I can just
+push and pull ZFS datasets through an encrypted tunnel without caring where I am
+in the world.&lt;/p>
+&lt;pre>&lt;code>## Machine 1
+zfs send eggshells/data | hyp beam &amp;quot;secret words&amp;quot;
+## Machine 2
+hyp beam &amp;quot;secret words&amp;quot; | zfs recv zpool/data
+&lt;/code>&lt;/pre>&lt;p>Machine 1 pipes &lt;code>zfs send&lt;/code> into &lt;code>hyp beam&lt;/code> which chooses a secret. This secret
+can be any string in &lt;code>hyp beam &amp;quot;&amp;lt;secret&amp;gt;&amp;quot;&lt;/code>. Machine 2 then pipes the output of
+&lt;code>hyp beam &amp;quot;&amp;lt;secret&amp;gt;&amp;quot;&lt;/code> into &lt;code>zfs recv&lt;/code>. How simple is that?&lt;/p>
+&lt;p>Sidenote: I call one of my pools &lt;code>eggshells&lt;/code> because often whenever I interact
+with it, it&amp;rsquo;s like &lt;a href="https://dictionary.cambridge.org/dictionary/english/walk-be-on-eggshells">walking on
+eggshells.&lt;/a>&lt;/p>
+&lt;h1 id="video-streams-over-the-wan">Video streams over the WAN&lt;/h1>
+&lt;p>&lt;img src="https://blog.croughan.sh/hypermpv.png" alt="image">&lt;/p>
+&lt;p>Sending Video over &lt;code>hyp beam&lt;/code> is surprisingly practical. It&amp;rsquo;s proof that &lt;code>hyp beam&lt;/code> can be used in place of &lt;code>nc&lt;/code>. Once you realise that this is just a peer to
+peer link to send data through with no overhead, it ceases to be impressive. The
+ease of use is what is amazing.&lt;/p>
+&lt;p>The following will use fancy bash wankery to create two FIFO pipes with which to
+transmit video data from &lt;code>ffmpeg&lt;/code> through. Such that two clients can watch the
+video anywhere in the world via Hypercore, or Netcat.&lt;/p>
+&lt;h2 id="with-netcat">With Netcat&lt;/h2>
+&lt;p>This requires you to know the IP address of the machine, and have a direct
+connection via LAN/VPN.&lt;/p>
+&lt;pre>&lt;code>## Sending
+ffmpeg -vcodec mjpeg -i /dev/video0 -f avi - | tee -- &amp;gt;(nc -l 1234) &amp;gt;(nc -l 5678) &amp;gt; /dev/null; wait
+## Recieving
+# Client 1
+nc 127.0.0.1 1234 | mpv -
+# Client 2
+nc 127.0.0.1 5678 | mpv -
+&lt;/code>&lt;/pre>&lt;h2 id="with-hypercore-beam">With Hypercore Beam&lt;/h2>
+&lt;p>This does not require knowing the IP address of a machine, or having a direct
+connection via LAN/VPN. It will work between two machines anywhere in the world
+and is likely to succeed even when it encounters firewalls. The port also does
+not matter, because we only care about the data being piped into a process.&lt;/p>
+&lt;pre>&lt;code>## Sending
+ffmpeg -vcodec mjpeg -i /dev/video0 -f avi - | tee -- &amp;gt;(hyp beam &amp;quot;1234&amp;quot;) &amp;gt;(hyp beam &amp;quot;5678&amp;quot;) &amp;gt; /dev/null; wait
+## Recieving
+# Client 1
+hyp beam &amp;quot;1234&amp;quot; | mpv -
+# Client 2
+hyp beam &amp;quot;5678&amp;quot; | mpv -
+&lt;/code>&lt;/pre>&lt;h1 id="what-will-you-use-it-for">What will you use it for?&lt;/h1></content></item><item><title>NixOS + the Worst UEFI ever (S5520UR)</title><link>https://blog.croughan.sh/posts/nixos-on-s5520ur/</link><pubDate>Sun, 15 Aug 2021 03:51:17 +0100</pubDate><guid>https://blog.croughan.sh/posts/nixos-on-s5520ur/</guid><description>If you read the Wikipedia Page on UEFI you will notice there are a few things missing.
 The first thing that is missing is names. The second is the word &amp;lsquo;engineer&amp;rsquo;. Did humans make this? Is any one responsible? Who is to blame? UEFI was designed by a comittee, so no one can be held accountable.
 More digging tells me that UEFI was developed by over 140 technology companies as part of a UEFI consortium.</description><content>&lt;p>If you read &lt;a href="https://en.wikipedia.org/wiki/Unified_Extensible_Firmware_Interface">the Wikipedia Page on
 UEFI&lt;/a> you
