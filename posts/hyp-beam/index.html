@@ -26,9 +26,10 @@ hyp beam &quot;secret words&quot; | zfs recv zpool/data
 can be any string in <code>hyp beam "&lt;secret>"</code>. Machine 2 then pipes the output of
 <code>hyp beam "&lt;secret>"</code> into <code>zfs recv</code>. How simple is that?</p><p>Sidenote: I call one of my pools <code>eggshells</code> because often whenever I interact
 with it, it&rsquo;s like <a href=https://dictionary.cambridge.org/dictionary/english/walk-be-on-eggshells>walking on
-eggshells.</a></p><h1 id=video-streams-over-the-wan>Video streams over the WAN<a href=#video-streams-over-the-wan class=hanchor arialabel=Anchor>&#8983;</a></h1><p><img src=/hypermpv.png alt=image></p><p>Sending Video over <code>hyp beam</code> is surprisingly practical. It&rsquo;s proof that <code>hyp beam</code> can be used in place of <code>nc</code>. Once you realise that this is just a peer to
-peer link to send data through with no overhead, it ceases to be impressive. The
-ease of use is what is amazing.</p><p>The following will use fancy bash wankery to create two FIFO pipes with which to
+eggshells.</a></p><h1 id=video-streams-over-the-wan>Video streams over the WAN<a href=#video-streams-over-the-wan class=hanchor arialabel=Anchor>&#8983;</a></h1><p><img src=/hypermpv.png alt=image></p><p>Sending Video over <code>hyp beam</code> is surprisingly practical. It&rsquo;s a good
+demonstrator of how <code>hyp beam</code> can be used in place of <code>nc</code>. Once you realize
+that this is just a peer to peer link to send data through with no overhead, it
+ceases to be impressive. The ease of use is what is amazing.</p><p>The following will use fancy bash wankery to create two FIFO pipes with which to
 transmit video data from <code>ffmpeg</code> through. Such that two clients can watch the
 video anywhere in the world via Hypercore, or Netcat.</p><h2 id=with-netcat>With Netcat<a href=#with-netcat class=hanchor arialabel=Anchor>&#8983;</a></h2><p>This requires you to know the IP address of the machine, and have a direct
 connection via LAN/VPN.</p><pre><code>## Sending

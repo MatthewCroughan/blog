@@ -30,9 +30,10 @@ with it, it&amp;rsquo;s like &lt;a href="https://dictionary.cambridge.org/dictio
 eggshells.&lt;/a>&lt;/p>
 &lt;h1 id="video-streams-over-the-wan">Video streams over the WAN&lt;/h1>
 &lt;p>&lt;img src="https://blog.croughan.sh/hypermpv.png" alt="image">&lt;/p>
-&lt;p>Sending Video over &lt;code>hyp beam&lt;/code> is surprisingly practical. It&amp;rsquo;s proof that &lt;code>hyp beam&lt;/code> can be used in place of &lt;code>nc&lt;/code>. Once you realise that this is just a peer to
-peer link to send data through with no overhead, it ceases to be impressive. The
-ease of use is what is amazing.&lt;/p>
+&lt;p>Sending Video over &lt;code>hyp beam&lt;/code> is surprisingly practical. It&amp;rsquo;s a good
+demonstrator of how &lt;code>hyp beam&lt;/code> can be used in place of &lt;code>nc&lt;/code>. Once you realize
+that this is just a peer to peer link to send data through with no overhead, it
+ceases to be impressive. The ease of use is what is amazing.&lt;/p>
 &lt;p>The following will use fancy bash wankery to create two FIFO pipes with which to
 transmit video data from &lt;code>ffmpeg&lt;/code> through. Such that two clients can watch the
 video anywhere in the world via Hypercore, or Netcat.&lt;/p>
