@@ -61,7 +61,7 @@ hyp beam &amp;quot;5678&amp;quot; | mpv -
 &lt;/code>&lt;/pre>&lt;h1 id="sharing-files-with-linux-savvy-friends">Sharing files with Linux savvy friends&lt;/h1>
 &lt;p>Sometimes I want to share folders or files with friends. Usually I would use
 &lt;code>magic-wormhole&lt;/code> for this, but one of the annoying things about that program is
-that if you want to end a folder it first has to be zipped. That &lt;code>zip&lt;/code> process
+that if you want to send a folder it first has to be zipped. That &lt;code>zip&lt;/code> process
 can take a very long time and requires you to have as much RAM as the filesize
 you are trying to send. It also doesn&amp;rsquo;t even give you as good of a compression
 ratio as gzip. Since &lt;code>hyp beam&lt;/code> only cares about piping data, we can make up our
