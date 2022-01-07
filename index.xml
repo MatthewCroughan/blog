@@ -23,10 +23,10 @@ system.&lt;/p>
 &lt;li>
 &lt;p>Allow Godot to download files from the internet and place precompiled
 static binaries known as [export templates] from the internet, placing them in
-&lt;code>~/.local/share/godot/templates/&lt;/code> and put it into&lt;/p>
+&lt;code>~/.local/share/godot/templates/&lt;/code>&lt;/p>
 &lt;/li>
 &lt;li>
-&lt;p>Generate an Android debug keystore, for deploying to a development device&lt;/p>
+&lt;p>Generate an Android debug keystore, for deploying to a development device.&lt;/p>
 &lt;/li>
 &lt;/ul>
 &lt;p>Each step is required if you want to export your Godot game for Android. If you
