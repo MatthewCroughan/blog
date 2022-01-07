@@ -1,4 +1,195 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on Matthew Croughan's Blog</title><link>https://blog.croughan.sh/posts/</link><description>Recent content in Posts on Matthew Croughan's Blog</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Tue, 24 Aug 2021 01:51:58 +0100</lastBuildDate><atom:link href="https://blog.croughan.sh/posts/index.xml" rel="self" type="application/rss+xml"/><item><title>Hypercore Beam - Break Through NAT With This One Weird Trick</title><link>https://blog.croughan.sh/posts/hyp-beam/</link><pubDate>Tue, 24 Aug 2021 01:51:58 +0100</pubDate><guid>https://blog.croughan.sh/posts/hyp-beam/</guid><description>hyp beam can be thought of as a drop-in replacement for nc, for those situations where you just can&amp;rsquo;t be bothered to set up a VPN or manually establish a path between two machines via traditional methods like port forwarding. It provides the user with a method of breaking through NAT and transferring data via the Hypercore protocol between two machines, peer to peer, anywhere in the world. Peer discovery happens via DHT/mDNS using a concept called Hyperswarm, not too dissimilar from what Bittorrent clients have always done; although its usage of mDNS is quite unique and cool.</description><content>&lt;p>&lt;code>hyp beam&lt;/code> can be thought of as a drop-in replacement for &lt;code>nc&lt;/code>, for those
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on Matthew Croughan's Blog</title><link>https://blog.croughan.sh/posts/</link><description>Recent content in Posts on Matthew Croughan's Blog</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Thu, 06 Jan 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://blog.croughan.sh/posts/index.xml" rel="self" type="application/rss+xml"/><item><title>Godot's Export to Android: Easy with Nix</title><link>https://blog.croughan.sh/posts/godot-automation-nixos/</link><pubDate>Thu, 06 Jan 2022 00:00:00 +0000</pubDate><guid>https://blog.croughan.sh/posts/godot-automation-nixos/</guid><description>The pain Reading the Exporting for Android documentation for Godot is grim. It instructs developers to manually execute series of esoteric runes in order to hopefully achieve an end result and environment that is the same as everyone else. It expects you, the user, to &amp;ldquo;Ensure that the required packages are installed as well.&amp;rdquo;, at specific versions. It does not tell you how to go about getting those versions of the required programs, whilst encouraging you to use sdkmanager, a constantly mutating script which downloads random files and binaries from the internet, compiling nothing from source, and leaving two developers in very different states.</description><content>&lt;h1 id="the-pain">The pain&lt;/h1>
+&lt;p>Reading the &lt;a href="https://docs.godotengine.org/en/3.4/tutorials/export/exporting_for_android.html#exporting-for-android">Exporting for
+Android&lt;/a>
+documentation for Godot is grim. It instructs developers to manually execute
+series of esoteric runes in order to &lt;em>hopefully&lt;/em> achieve an end result and
+environment that is the same as everyone else. It expects you, the user, to
+&amp;ldquo;Ensure that the required packages are installed as well.&amp;rdquo;, at specific
+versions. It does not tell you how to go about getting those versions of the
+required programs, whilst encouraging you to use &lt;code>sdkmanager&lt;/code>, a constantly
+mutating script which downloads random files and binaries from the internet,
+compiling nothing from source, and leaving two developers in very different
+states.&lt;/p>
+&lt;p>After the developer has built their environment using &lt;a href="https://www.youtube.com/watch?v=H4oHU3RXjiM">nothing but a box of
+scraps&lt;/a>, they&amp;rsquo;re expected to do
+even more:&lt;/p>
+&lt;p>Now, they must:&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>Fill in strings by hand via the Godot GUI, which modifies the state of
+the &lt;code>~/.config/godot/editor_settings-3.tres&lt;/code> file, something unique to their
+system.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>Allow Godot to download files from the internet and place precompiled
+static binaries known as [export templates] from the internet, placing them in
+&lt;code>~/.local/share/godot/templates/&lt;/code> and put it into&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>Generate an Android debug keystore, for deploying to a development device&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;p>Each step is required if you want to export your Godot game for Android. If you
+miss a step or perform it in the wrong order, you risk hours of debugging. Do
+developers really have to go through all of this trouble, just to achieve the
+simple goal of exporting for Android? Can&amp;rsquo;t some sort of system handle this for
+us?&lt;/p>
+&lt;h1 id="patching-godot-to-pieces">Patching Godot to pieces&lt;/h1>
+&lt;p>&lt;a href="https://github.com/goatchurchprime/">Julian Todd&lt;/a>, makes a project called
+&lt;a href="https://github.com/tunnelvr/tunnelvr">TunnelVR&lt;/a>, which is aiming to be like
+OpenStreetMaps for caves. He needs Android export capabilities, and I don&amp;rsquo;t want
+him to go through the pain explained above.&lt;/p>
+&lt;p>I want him to be able to run a single command in order to obtain an environment
+in which everything is present and already wired into Godot, this means:&lt;/p>
+&lt;ul>
+&lt;li>The Android SDK, without needing to run a series of random &lt;code>sdkmanager&lt;/code>
+commands.&lt;/li>
+&lt;li>The Godot Export Templates, without needing to click any
+buttons in Godot.&lt;/li>
+&lt;li>A debug android keystore, without needing to manually generate keys using the
+&lt;code>keytool&lt;/code> command.&lt;/li>
+&lt;/ul>
+&lt;p>If only there were a way to tell Godot where to find the Android SDK, Godot
+Export Templates and Android keystore, perhaps via the cli or by an environment
+variable; bypassing their &lt;code>editor_settings-3.tres&lt;/code> config file which is
+constantly being overwritten as you fill in boxes in the editor. That way, I
+could grab those in a way that I control, constructing an environment for a
+developer in my own way, simply telling Godot where to find these files.&lt;/p>
+&lt;p>I got tired of &lt;a href="https://en.wikipedia.org/wiki/Waiting_for_Godot">&lt;em>waiting for
+Godot&lt;/em>&lt;/a>, so patched the source
+code using &lt;a href="https://nixos.org/guides/install-nix.html">Nix&lt;/a>, to accomplish
+exactly that, and was very successful. My commits and pull request are visible
+&lt;a href="https://github.com/tunnelvr/tunnelvr/pull/28">here&lt;/a>, let&amp;rsquo;s take a look at what
+I did.&lt;/p>
+&lt;h2 id="defining-a-patched-godot">Defining a patched Godot&lt;/h2>
+&lt;p>We need to make Godot read environment variables for the paths we want to
+control. We can only do this by modifying Godot&amp;rsquo;s source code, but they&amp;rsquo;re
+unlikely to accept a patch for this functionality.&lt;/p>
+&lt;p>I define &lt;code>my-godot&lt;/code>. It is equal to the &lt;code>godot&lt;/code> we already have from Nixpkgs,
+except we&amp;rsquo;re going to make a few changes. We use &lt;code>overrideAttrs&lt;/code>, a function
+that lives inside of all packages in Nixpkgs. This function lets us say &amp;ldquo;I want
+Godot, as already described by Nixpkgs, except I want to change the source code
+used, and I wanna patch some of the code, and I want to change the version
+string, etc&amp;hellip;&amp;rdquo;.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-nix" data-lang="nix">&lt;span style="color:#f92672">...&lt;/span>
+my-godot &lt;span style="color:#960050;background-color:#1e0010">=&lt;/span> godot&lt;span style="color:#f92672">.&lt;/span>overrideAttrs (oldAttrs: &lt;span style="color:#66d9ef">rec&lt;/span> {
+version &lt;span style="color:#f92672">=&lt;/span> godot-source&lt;span style="color:#f92672">.&lt;/span>rev;
+src &lt;span style="color:#f92672">=&lt;/span> godot-source;
+preBuild &lt;span style="color:#f92672">=&lt;/span>
+&lt;span style="color:#e6db74">&amp;#39;&amp;#39;
+&lt;/span>&lt;span style="color:#e6db74"> substituteInPlace platform/android/export/export_plugin.cpp \
+&lt;/span>&lt;span style="color:#e6db74"> --replace &amp;#39;String sdk_path = EditorSettings::get_singleton()-&amp;gt;get(&amp;#34;export/android/android_sdk_path&amp;#34;)&amp;#39; &amp;#39;String sdk_path = std::getenv(&amp;#34;tunnelvr_ANDROID_SDK&amp;#34;)&amp;#39;
+&lt;/span>&lt;span style="color:#e6db74"> substituteInPlace platform/android/export/export_plugin.cpp \
+&lt;/span>&lt;span style="color:#e6db74"> --replace &amp;#39;EditorSettings::get_singleton()-&amp;gt;get(&amp;#34;export/android/debug_keystore&amp;#34;)&amp;#39; &amp;#39;std::getenv(&amp;#34;tunnelvr_DEBUG_KEY&amp;#34;)&amp;#39;
+&lt;/span>&lt;span style="color:#e6db74"> substituteInPlace editor/editor_settings.cpp \
+&lt;/span>&lt;span style="color:#e6db74"> --replace &amp;#39;get_data_dir().plus_file(&amp;#34;templates&amp;#34;)&amp;#39; &amp;#39;std::getenv(&amp;#34;tunnelvr_EXPORT_TEMPLATES&amp;#34;)&amp;#39;
+&lt;/span>&lt;span style="color:#e6db74"> &amp;#39;&amp;#39;&lt;/span>;
+});
+&lt;span style="color:#f92672">...&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;code>substituteInPlace&lt;/code> is roughly equivalent to &lt;code>sed&lt;/code>, except all I have to say is
+&amp;ldquo;Take this file and replace this string with another string.&amp;rdquo;. In this example,
+I am taking the Godot C++ source code and replacing the offending code in the
+relevant files with my own.&lt;/p>
+&lt;p>&lt;code>EditorSettings::get_singleton()-&amp;gt;get(&amp;quot;export/android/android_sdk_path&lt;/code> means
+that Godot will read my &lt;code>~/.config/godot/editor_settings-3.tres&lt;/code> to find the
+value of the &lt;code>android_sdk_path&lt;/code> string that the Godot devs assume has been added
+by the user. Instead, I&amp;rsquo;m going to make it equal to an environment variable I
+define, &lt;code>$tunnelvr_ANDROID_SDK&lt;/code>. This means I can now set the path to the
+Android SDK in any way of my choosing. I then do the same for every other path I
+want to control, by replacing everything with &lt;code>std::getenv&lt;/code>, rather than their
+&lt;code>EditorSettings&lt;/code> functions, or hard coded paths.&lt;/p>
+&lt;p>The &lt;code>preBuild&lt;/code> phase is where I&amp;rsquo;m choosing to do the patching. This means that
+prior to building the source code for Godot, our version of Godot (&lt;code>my-godot&lt;/code>)
+is going to run the shell script &lt;code>substituteInPlace&lt;/code> on some source code files,
+to replace strings that I want to have control over in the Godot source code.
+&lt;code>substituteInPlace&lt;/code> is a shell function that&amp;rsquo;s been gifted to us by Nix, since
+Godot is a derivation (nix package) that was made using the
+&lt;code>stdenv.mkDerivation&lt;/code> function that almost every package in Nixpkgs is made
+from. It just has this helper function inside of it, ready for us to make use
+of.&lt;/p>
+&lt;h2 id="defining-a-wrapped-version-of-our-patched-godot">Defining a wrapped version of our patched Godot&lt;/h2>
+&lt;p>Now that we&amp;rsquo;ve made a version of Godot that will read environment variables to
+find our files, we can derive yet another Godot where all those environment
+variables are set before you run it. Here, I call it &lt;code>my-godot-wrapped&lt;/code>.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-nix" data-lang="nix">&lt;span style="color:#f92672">...&lt;/span>
+my-godot-wrapped &lt;span style="color:#960050;background-color:#1e0010">=&lt;/span> symlinkJoin {
+name &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;my-godot-with-android-sdk&amp;#34;&lt;/span>;
+nativeBuildInputs &lt;span style="color:#f92672">=&lt;/span> [ final&lt;span style="color:#f92672">.&lt;/span>makeWrapper ];
+paths &lt;span style="color:#f92672">=&lt;/span> [ final&lt;span style="color:#f92672">.&lt;/span>my-godot ];
+postBuild &lt;span style="color:#f92672">=&lt;/span>
+&lt;span style="color:#66d9ef">let&lt;/span>
+&lt;span style="color:#75715e"># Godot&amp;#39;s source code has `version.py` in it, which means we&lt;/span>
+&lt;span style="color:#75715e"># can parse it using regex in order to construct the link to&lt;/span>
+&lt;span style="color:#75715e"># download the export templates from.&lt;/span>
+version &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#66d9ef">rec&lt;/span> {
+&lt;span style="color:#75715e"># Fully constructed string, example: &amp;#34;3.4&amp;#34;.&lt;/span>
+string &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;&lt;/span>&lt;span style="color:#e6db74">${&lt;/span>major &lt;span style="color:#f92672">+&lt;/span> &lt;span style="color:#e6db74">&amp;#34;.&amp;#34;&lt;/span> &lt;span style="color:#f92672">+&lt;/span> minor &lt;span style="color:#f92672">+&lt;/span> (final&lt;span style="color:#f92672">.&lt;/span>lib&lt;span style="color:#f92672">.&lt;/span>optionalString (patch &lt;span style="color:#f92672">!=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;&amp;#34;&lt;/span>) &lt;span style="color:#e6db74">&amp;#34;.&amp;#34;&lt;/span> &lt;span style="color:#f92672">+&lt;/span> patch)&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>;
+file &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;&lt;/span>&lt;span style="color:#e6db74">${&lt;/span>godot-source&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74">/version.py&amp;#34;&lt;/span>;
+major &lt;span style="color:#f92672">=&lt;/span> toString (builtins&lt;span style="color:#f92672">.&lt;/span>match &lt;span style="color:#e6db74">&amp;#34;.+major = ([0-9]+).+&amp;#34;&lt;/span> (builtins&lt;span style="color:#f92672">.&lt;/span>readFile file));
+minor &lt;span style="color:#f92672">=&lt;/span> toString (builtins&lt;span style="color:#f92672">.&lt;/span>match &lt;span style="color:#e6db74">&amp;#34;.+minor = ([0-9]+).+&amp;#34;&lt;/span> (builtins&lt;span style="color:#f92672">.&lt;/span>readFile file));
+patch &lt;span style="color:#f92672">=&lt;/span> toString (builtins&lt;span style="color:#f92672">.&lt;/span>match &lt;span style="color:#e6db74">&amp;#34;.+patch = ([1-9]+).+&amp;#34;&lt;/span> (builtins&lt;span style="color:#f92672">.&lt;/span>readFile file));
+&lt;span style="color:#75715e"># stable, rc, dev, etc.&lt;/span>
+status &lt;span style="color:#f92672">=&lt;/span> toString (builtins&lt;span style="color:#f92672">.&lt;/span>match &lt;span style="color:#e6db74">&amp;#34;.+status = &lt;/span>&lt;span style="color:#ae81ff">\&amp;#34;&lt;/span>&lt;span style="color:#e6db74">([A-z]+)&lt;/span>&lt;span style="color:#ae81ff">\&amp;#34;&lt;/span>&lt;span style="color:#e6db74">.+&amp;#34;&lt;/span> (builtins&lt;span style="color:#f92672">.&lt;/span>readFile file));
+};
+debugKey &lt;span style="color:#f92672">=&lt;/span> final&lt;span style="color:#f92672">.&lt;/span>runCommand &lt;span style="color:#e6db74">&amp;#34;debugKey&amp;#34;&lt;/span> {} &lt;span style="color:#e6db74">&amp;#39;&amp;#39;
+&lt;/span>&lt;span style="color:#e6db74"> &lt;/span>&lt;span style="color:#e6db74">${&lt;/span>final&lt;span style="color:#f92672">.&lt;/span>jre_minimal&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74">/bin/keytool -keyalg RSA -genkeypair -alias androiddebugkey -keypass android -keystore debug.keystore -storepass android -dname &amp;#34;CN=Android Debug,O=Android,C=US&amp;#34; -validity 9999 -deststoretype pkcs12
+&lt;/span>&lt;span style="color:#e6db74"> mv debug.keystore $out
+&lt;/span>&lt;span style="color:#e6db74"> &amp;#39;&amp;#39;&lt;/span>;
+export-templates &lt;span style="color:#f92672">=&lt;/span> final&lt;span style="color:#f92672">.&lt;/span>fetchzip {
+url &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;https://downloads.tuxfamily.org/godotengine/&lt;/span>&lt;span style="color:#e6db74">${&lt;/span>version&lt;span style="color:#f92672">.&lt;/span>string&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74">/Godot_v&lt;/span>&lt;span style="color:#e6db74">${&lt;/span>version&lt;span style="color:#f92672">.&lt;/span>string&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74">-&lt;/span>&lt;span style="color:#e6db74">${&lt;/span>version&lt;span style="color:#f92672">.&lt;/span>status&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74">_export_templates.tpz&amp;#34;&lt;/span>;
+sha256 &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;sha256-3trC1ocgIVNWN19k6LUnZ6NhDTme+aT7RVL2XmkXzr0=&amp;#34;&lt;/span>;
+&lt;span style="color:#75715e"># postFetch is necessary because the downloaded file has a&lt;/span>
+&lt;span style="color:#75715e"># .tpz extension, meaning `fetchzip` cannot otherwise extract&lt;/span>
+&lt;span style="color:#75715e"># it properly. Additionally, the game engine expects the&lt;/span>
+&lt;span style="color:#75715e"># template path to be in a folder by the name of the current&lt;/span>
+&lt;span style="color:#75715e"># version + status, like &amp;#39;3.4-stable/templates&amp;#39; for example,&lt;/span>
+&lt;span style="color:#75715e"># so we accomplish that here.&lt;/span>
+postFetch &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#39;&amp;#39;
+&lt;/span>&lt;span style="color:#e6db74"> unzip $downloadedFile -d ./
+&lt;/span>&lt;span style="color:#e6db74"> mkdir -p $out/templates/&lt;/span>&lt;span style="color:#e6db74">${&lt;/span>version&lt;span style="color:#f92672">.&lt;/span>string&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74">.&lt;/span>&lt;span style="color:#e6db74">${&lt;/span>version&lt;span style="color:#f92672">.&lt;/span>status&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74">
+&lt;/span>&lt;span style="color:#e6db74"> mv ./templates/* $out/templates/&lt;/span>&lt;span style="color:#e6db74">${&lt;/span>version&lt;span style="color:#f92672">.&lt;/span>string&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74">.&lt;/span>&lt;span style="color:#e6db74">${&lt;/span>version&lt;span style="color:#f92672">.&lt;/span>status&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74">
+&lt;/span>&lt;span style="color:#e6db74"> &amp;#39;&amp;#39;&lt;/span>;
+};
+&lt;span style="color:#66d9ef">in&lt;/span>
+&lt;span style="color:#e6db74">&amp;#39;&amp;#39;
+&lt;/span>&lt;span style="color:#e6db74"> wrapProgram $out/bin/godot \
+&lt;/span>&lt;span style="color:#e6db74"> --set tunnelvr_ANDROID_SDK &amp;#34;&lt;/span>&lt;span style="color:#e6db74">${&lt;/span>final&lt;span style="color:#f92672">.&lt;/span>androidenv&lt;span style="color:#f92672">.&lt;/span>androidPkgs_9_0&lt;span style="color:#f92672">.&lt;/span>androidsdk&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74">/libexec/android-sdk&amp;#34;\
+&lt;/span>&lt;span style="color:#e6db74"> --set tunnelvr_EXPORT_TEMPLATES &amp;#34;&lt;/span>&lt;span style="color:#e6db74">${&lt;/span>export-templates&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74">/templates&amp;#34; \
+&lt;/span>&lt;span style="color:#e6db74"> --set tunnelvr_DEBUG_KEY &amp;#34;&lt;/span>&lt;span style="color:#e6db74">${&lt;/span>debugKey&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74">&amp;#34;
+&lt;/span>&lt;span style="color:#e6db74"> &amp;#39;&amp;#39;&lt;/span>;
+};
+&lt;span style="color:#f92672">...&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>This code was a lot of fun to make.&lt;/p>
+&lt;p>&lt;code>debugKey&lt;/code> is a simple derivation which uses &lt;code>keytool&lt;/code> to generate a key, which
+is placed in the Nix Store. We use &lt;code>wrapProgram&lt;/code> to set the &lt;code>tunnelvr_DEBUG_KEY&lt;/code>
+variable to the result of the nix expression &lt;code>${debugKey}&lt;/code>. That results in a
+string like &lt;code>/nix/store/1pw8k0vl0miqv7kjxkyfk1qq5rywb4rs-debugKey&lt;/code>, which Godot
+will now use thanks to our patching. &lt;code>export-templates&lt;/code> is the same way, and our
+&lt;code>tunnelvr_ANDROID_SDK&lt;/code> variable also trivially fetches the android sdk from
+&lt;code>androidenv.androidPkgs_9_0.androidsdk&lt;/code> in Nixpkgs.&lt;/p>
+&lt;p>&lt;code>version&lt;/code> is an attribute set which contains the major, minor, patch and status,
+which allows me to construct a string like &lt;code>3.4-stable&lt;/code> by reading and applying
+regex to the
+&lt;a href="https://github.com/godotengine/godot/blob/3.4-stable/version.py">version.py&lt;/a>
+file that exists in the Godot source code. This allows me to fetch the
+export-templates in a way that doesn&amp;rsquo;t force me to hardcode the URL to a string.&lt;/p>
+&lt;h2 id="defining-the-devshell">Defining the devShell&lt;/h2>
+&lt;p>We now have our solution. If I want to make this as simple as one command, &lt;code>nix develop&lt;/code>, I have to define a &lt;code>devShell&lt;/code> in the &lt;code>flake.nix&lt;/code> of this repository.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-nix" data-lang="nix">&lt;span style="color:#f92672">...&lt;/span>
+devShell &lt;span style="color:#960050;background-color:#1e0010">=&lt;/span> forAllSystems (system:
+&lt;span style="color:#66d9ef">let&lt;/span> pkgs &lt;span style="color:#f92672">=&lt;/span> nixpkgsFor&lt;span style="color:#f92672">.&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>&lt;span style="color:#e6db74">${&lt;/span>system&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>;
+&lt;span style="color:#66d9ef">in&lt;/span> pkgs&lt;span style="color:#f92672">.&lt;/span>mkShell {
+buildInputs &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#66d9ef">with&lt;/span> pkgs; [ my-godot-wrapped jre_headless ];
+});
+&lt;span style="color:#f92672">...&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>This defines a shell which contains &lt;code>my-godot-wrapped&lt;/code> and &lt;code>jre_headless&lt;/code>. Turns
+out that some of the Android SDK commands have an undeclared dependency on Java,
+such as &lt;code>keytool&lt;/code>, which otherwise crash if it is not present.&lt;/p>
+&lt;h1 id="the-result">The result&lt;/h1>
+&lt;p>Now that I&amp;rsquo;ve patched Godot in this fashion, if you&amp;rsquo;re developing TunnelVR, all
+you have to do is &lt;code>nix develop&lt;/code>, and you can export APKs from Godot. No extra
+steps. This will work on any variety of Linux distribution, be it Ubuntu,
+Alpine, Arch, it doesn&amp;rsquo;t matter as long as you have &lt;code>nix&lt;/code>.&lt;/p></content></item><item><title>Hypercore Beam - Break Through NAT With This One Weird Trick</title><link>https://blog.croughan.sh/posts/hyp-beam/</link><pubDate>Tue, 24 Aug 2021 01:51:58 +0100</pubDate><guid>https://blog.croughan.sh/posts/hyp-beam/</guid><description>hyp beam can be thought of as a drop-in replacement for nc, for those situations where you just can&amp;rsquo;t be bothered to set up a VPN or manually establish a path between two machines via traditional methods like port forwarding. It provides the user with a method of breaking through NAT and transferring data via the Hypercore protocol between two machines, peer to peer, anywhere in the world. Peer discovery happens via DHT/mDNS using a concept called Hyperswarm, not too dissimilar from what Bittorrent clients have always done; although its usage of mDNS is quite unique and cool.</description><content>&lt;p>&lt;code>hyp beam&lt;/code> can be thought of as a drop-in replacement for &lt;code>nc&lt;/code>, for those
 situations where you just can&amp;rsquo;t be bothered to set up a VPN or manually
 establish a path between two machines via traditional methods like port
 forwarding. It provides the user with a method of breaking through NAT and
